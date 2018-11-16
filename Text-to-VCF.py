@@ -1,9 +1,9 @@
 #!/usr/bin/env python3.5
 # NAME
-#    VCF-Conversion.py - convert Hapamp data to VCF w.r.t. Wm82.a2
+#    Txt-to-VCF.py - convert Hapamp like data to VCF w.r.t. Wm82.a2
 #
 # SYNOPSIS
-#     Hapmap to VCF file
+#     Hapmap like/Text file to VCF foramt 
 #
 # INPUT FILES
 #     SEQLEN_FILE
@@ -22,7 +22,7 @@
 #         dbSNP SNPBATCH file (snpBatch_BARC_1059007.gz)
 #
 #     SOYSNP50K_FILE
-#         Korean_snp_working1.txt
+#         NEW_cultivars_SNP50K_haplotypes.gz
 #
 # ENVIRONMENT VARIABLES
 #     SOYSNP50K_ONLY_HOMOZYGOUS
@@ -30,7 +30,7 @@
 #         Useful for input to Beagle.
 #
 # CHANGE HISTORY
-#     2016-10-27    Use 
+#    
 #     2016-09-28    Use sequence lengths from the JGI assembly. Translate coordinates from NCBI- to JGI-assembly space.
 #     2016-06-03    Initial version
 #
@@ -49,7 +49,8 @@ print('##fileformat=VCFv4.2')
 print('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
 print('##fileDate=' + datetime.date.today().strftime("%Y%m%d"))
 
-# Get (JGI) sequence lengths
+# Get (JGI) sequence lengths, 
+# open file containing sequence lengths
 with open("/scratch/abrown1/Gmax_275_v2.0.softmasked.fa.seqlen") as seqlen:
     seqid_to_length = {seqid: int(length) for (seqid, length) in (line.split() for line in seqlen)}
 
@@ -57,13 +58,13 @@ for seqid in seqid_to_length:
     print('##contig=<ID={},length={},assembly=Wm82.a2,species="Glycine max",taxonomy=3847>'.format(seqid, seqid_to_length[seqid]))
 
 VCF = []
-
+# Open Text File with SNP information
 with open("/scratch/abrown1/Song_new_data/New_Cultivars_50k") as f: 
     print("#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO", 
     	   "FORMAT", *f.readline().split()[6:],sep="\t")
     for line in f:
         A = line[:-1].split("\t")
-        CHROm = A[4]
+        CHROM = A[4]
         POS = A[5]
         ID = A[0]
         REF = A[2]
